@@ -1,9 +1,9 @@
-package tests;
+// package tests;
 
-import entity.effect.StatusEffect;
+// import entity.effect.DurationEffect;
 
-public class TestEffect extends StatusEffect {
-    public TestEffect() {
-        name = "Test"; duration = 2;
-    }
-}
+// public class TestEffect extends DurationEffect {
+//     public TestEffect() {
+//         name = "Test"; duration = 2;
+//     }
+// }

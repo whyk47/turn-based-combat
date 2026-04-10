@@ -1,11 +1,8 @@
 package entity.action.interfaces;
 
-import java.util.List;
-
 import entity.action.ActionContext;
-import entity.combatant.Combatant;
 
-public abstract class SpecialAttack implements BasicAttack {
+public abstract class SpecialAttack implements Attack {
     protected int cooldown;
     protected int specialCooldown;
 
@@ -19,10 +16,10 @@ public abstract class SpecialAttack implements BasicAttack {
 
     @Override
     public boolean execute(ActionContext ctx) {
-        if (!isReady(ctx)) return false;
-        List<Combatant> targets = selectTargets(ctx);
-        for (Combatant t : targets) { executeOn(t, ctx); }
-        resetCooldown();
-        return true;
+        if (Attack.super.execute(ctx)) {
+            resetCooldown();
+            return true;
+        }
+        return false;
     };
 }

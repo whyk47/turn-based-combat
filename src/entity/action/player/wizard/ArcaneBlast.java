@@ -6,7 +6,7 @@ import entity.action.ActionContext;
 import entity.action.interfaces.SpecialAttack;
 import entity.action.interfaces.SplashAttack;
 import entity.combatant.Combatant;
-import entity.combatant.Wizard;
+import entity.effect.ArcaneBlastEffect;
 
 public class ArcaneBlast extends SpecialAttack implements SplashAttack {
 
@@ -29,15 +29,12 @@ public class ArcaneBlast extends SpecialAttack implements SplashAttack {
 
     @Override
     public boolean execute(ActionContext ctx) {
-        if (!isReady(ctx)) return false;
-        List<Combatant> targets = selectTargets(ctx);
-        for (Combatant t : targets) { executeOn(t, ctx); }
-        int bonus = getArcaneBonus(targets);
-        if (bonus > 0 && ctx.actor instanceof Wizard) {
-            ((Wizard) ctx.actor).addBonusAttack(bonus);
-            ctx.ui.displayActionResult("Arcane Bonus! ATK +" + bonus + " --> ATK now " + ctx.actor.getAttack());
+        if (super.execute(ctx)) { 
+            int bonus = getArcaneBonus(ctx.targets);
+            ctx.actor.getStatus().add(new ArcaneBlastEffect(bonus), ctx.ui);
+            return true; 
         }
-        return true;
+        return false;
     }
 
     @Override public String getLabel() { return "Arcane Blast"; }

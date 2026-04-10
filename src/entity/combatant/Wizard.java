@@ -13,6 +13,4 @@ public class Wizard extends Player {
         actions.add(new WizardBasicAttack());
         actions.add(new ArcaneBlast());
     }
-
-    public void addBonusAttack(int amount) { this.attack += amount; }
 }

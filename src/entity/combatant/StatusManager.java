@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import boundary.GameUI;
+import entity.effect.NonStackableEffect;
 import entity.effect.StatusEffect;
 
 /**
@@ -16,7 +17,7 @@ import entity.effect.StatusEffect;
  * - Non-stackable: one entry per effect type (highest duration wins)
  * - Stackable: List<StatusEffect> per type, allowing duplicates
  */
-public class CombatantStatusEffects {
+public class StatusManager {
 
     // Non-stackable: one effect per type
     private final Map<Class<? extends StatusEffect>, StatusEffect> nonStackable = new HashMap<>();
@@ -24,27 +25,28 @@ public class CombatantStatusEffects {
     // Stackable: multiple effects of the same type, keyed by type
     private final Map<Class<? extends StatusEffect>, List<StatusEffect>> stackable = new HashMap<>();
 
-    private final String owner;
+    private final Combatant owner;
 
-    public CombatantStatusEffects(String owner) {
+    public StatusManager(Combatant owner) {
         this.owner = owner;
     }
 
-    // ── Add ──────────────────────────────────────────────────
-
-    public void add(StatusEffect effect) {
-        if (effect.isStackable()) {
-            stackable.computeIfAbsent(effect.getClass(), k -> new ArrayList<>()).add(effect);
+    public void add(StatusEffect effect, GameUI ui) {
+        if (effect instanceof NonStackableEffect) {
+            NonStackableEffect e = (NonStackableEffect) effect;
+            // Since effects are hashed by class, can cast exsiting to non-stackable
+            NonStackableEffect existing = (NonStackableEffect) nonStackable.get(effect.getClass());
+            if (existing != null) { ((StatusEffect) existing).remove(owner, ui); }
+            // Type cast is safe as all non-stackable effects extend status effect
+            StatusEffect combined = (StatusEffect) e.combine(existing);
+            nonStackable.put(effect.getClass(), combined);
+            combined.apply(owner, ui);
         } else {
-            StatusEffect existing = nonStackable.get(effect.getClass());
-            int existingDuration = existing != null ? existing.getDuration() : 0;
-            if (effect.getDuration() > existingDuration) {
-                nonStackable.put(effect.getClass(), effect);
-            }
+            stackable.computeIfAbsent(effect.getClass(), k -> new ArrayList<>()).add(effect);
+            effect.apply(owner, ui);
         }
     }
 
-    // ── Query ─────────────────────────────────────────────────
 
     /**
      * Returns all active effects of a given type.
@@ -60,10 +62,6 @@ public class CombatantStatusEffects {
         return stackable.getOrDefault(type, new ArrayList<>());
     }
 
-    public int getValue(Class<? extends StatusEffect> type) {
-        List<StatusEffect> effects = get(type);
-        return effects.stream().mapToInt(e -> e.getValue()).sum();
-    }
 
     /**
      * Returns all active effects across both maps as a flat list.
@@ -82,7 +80,6 @@ public class CombatantStatusEffects {
             stackable.getOrDefault(type, new ArrayList<>()).stream().anyMatch(e -> !e.isExpired());
     }
 
-    // ── Tick ──────────────────────────────────────────────────
 
     /**
      * Ticks all effects matching the given begin flag.
@@ -91,14 +88,12 @@ public class CombatantStatusEffects {
      */
     public void tick(GameUI ui, boolean begin) {
         // Tick non-stackable effects
-        Iterator<Map.Entry<Class<? extends StatusEffect>, StatusEffect>> mapIt =
-                nonStackable.entrySet().iterator();
+        Iterator<Map.Entry<Class<? extends StatusEffect>, StatusEffect>> mapIt = nonStackable.entrySet().iterator();
         while (mapIt.hasNext()) {
             StatusEffect e = mapIt.next().getValue();
             if (e.isBegin() != begin) continue;
-            e.decrementDuration();
+            e.tick(owner, ui);
             if (e.isExpired()) {
-                e.onExpire(owner, ui);
                 mapIt.remove();
             }
         }
@@ -109,9 +104,8 @@ public class CombatantStatusEffects {
             while (listIt.hasNext()) {
                 StatusEffect e = listIt.next();
                 if (e.isBegin() != begin) continue;
-                e.decrementDuration();
+                e.tick(owner, ui);
                 if (e.isExpired()) {
-                    e.onExpire(owner, ui);
                     listIt.remove();
                 }
             }
@@ -120,8 +114,6 @@ public class CombatantStatusEffects {
         // Clean up empty stackable lists from the map
         stackable.entrySet().removeIf(entry -> entry.getValue().isEmpty());
     }
-
-    // ── Display ───────────────────────────────────────────────
 
     @Override
     public String toString() {

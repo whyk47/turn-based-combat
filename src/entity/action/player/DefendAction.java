@@ -8,7 +8,7 @@ public class DefendAction implements SelfAction {
 
     @Override
     public void executeOn(Combatant target, ActionContext ctx) {
-        target.getStatus().add(new DefendEffect());
+        target.getStatus().add(new DefendEffect(), ctx.ui);
         ctx.ui.displayActionResult(target.getName() +
                 " defends! +10 DEF for 2 turns.");
     }

@@ -1,7 +1,7 @@
 package entity.combatant.interfaces;
 
 import boundary.GameUI;
-import entity.combatant.CombatantStatusEffects;
+import entity.combatant.StatusManager;
 import entity.effect.StunEffect;
 
 public interface Stunnable {
@@ -10,21 +10,20 @@ public interface Stunnable {
      * Applies a stun of the given duration in turns.
      * Implementations should take the max of current and new duration.
      */
-    CombatantStatusEffects getStatus();
+    StatusManager getStatus();
     String getName();
 
     /**
      * Returns true if a StunEffect is currently present in the status effect list.
      */
     default boolean isStunned() {
-        CombatantStatusEffects status = getStatus(); 
+        StatusManager status = getStatus(); 
         return status.contains(StunEffect.class);
     }
 
     default void applyStun(int duration, GameUI ui) {
-        CombatantStatusEffects status = getStatus();
-        status.add(new StunEffect(duration));
-        ui.displayActionResult(getName() + " is STUNNED for " + duration + " turns!");
+        StatusManager status = getStatus();
+        status.add(new StunEffect(duration), ui);
     }
 
     default void showStun(GameUI ui) {

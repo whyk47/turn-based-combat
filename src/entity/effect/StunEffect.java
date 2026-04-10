@@ -1,16 +1,22 @@
 package entity.effect;
 
 import boundary.GameUI;
+import entity.combatant.Combatant;
 
-public class StunEffect extends StatusEffect {
+public class StunEffect extends DurationEffect implements NonStackableEffect {
     public StunEffect(int duration) { 
-        name = "Stun"; 
-        this.duration = duration;
-        begin = false; 
+        super("Stun", duration, false);
+    }
+
+    public void apply(Combatant target, GameUI ui) { 
+        ui.displayActionResult(getName() + " is STUNNED for " + duration + " turns!");
     }
 
     @Override
-    public void onExpire(String c, GameUI ui) {
-        ui.displayActionResult("Stun effect on " + c + " has expired.");
+    @SuppressWarnings("unchecked")
+    public <T extends NonStackableEffect> T combine(T other) {
+        if (!(other instanceof StunEffect)) return (T) this;
+        StunEffect otherStun = (StunEffect) other;
+        return (T) (this.getDuration() >= otherStun.getDuration() ? this : otherStun);
     }
 }

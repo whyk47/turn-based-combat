@@ -1,12 +1,20 @@
 package entity.effect;
 
 import boundary.GameUI;
+import entity.combatant.Combatant;
 
-public class SmokeBombEffect extends StatusEffect {
-    public SmokeBombEffect(int duration) { this.name = "SmokeBomb"; this.duration = duration; }
+public class SmokeBombEffect extends DurationEffect implements NonStackableEffect {
+    public SmokeBombEffect(int duration) { 
+        super("Smoke Bomb", duration, true);
+    }
+
+    public void apply(Combatant target, GameUI ui) {}
 
     @Override
-    public void onExpire(String c, GameUI ui) {
-        ui.displayActionResult("Smoke Bomb effect on " + c + " has expired.");
+    @SuppressWarnings("unchecked")
+    public <T extends NonStackableEffect> T combine(T other) {
+        if (!(other instanceof SmokeBombEffect)) return (T) this;
+        SmokeBombEffect otherSmoke = (SmokeBombEffect) other;
+        return (T) (this.getDuration() >= otherSmoke.getDuration() ? this : otherSmoke);
     }
 }

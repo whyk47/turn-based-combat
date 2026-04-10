@@ -19,6 +19,7 @@ public class ActionContext {
     public final List<Combatant> allCombatants;
     public final GameUI ui;
     public Item selectedItem;
+    public List<Combatant> targets;
 
     public ActionContext(Combatant actor,
                          List<Combatant> allCombatants,

@@ -1,6 +1,7 @@
 package entity.item;
 
 import entity.action.ActionContext;
+import entity.combatant.StatField;
 import entity.combatant.interfaces.Healable;;
 
 public class Potion extends Item {
@@ -13,7 +14,7 @@ public class Potion extends Item {
             ((Healable) ctx.actor).heal(100);
             used = true;
             ctx.ui.displayActionResult(ctx.actor.getName() + " uses Potion! HP: " + before +
-                    " → " + ctx.actor.getHp() + "/" + ctx.actor.getMaxHp());
+                    " --> " + ctx.actor.getHp() + "/" + ctx.actor.stats().get(StatField.maxHp));
         }
     }
 }

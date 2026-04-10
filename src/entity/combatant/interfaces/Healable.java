@@ -1,8 +1,11 @@
 package entity.combatant.interfaces;
 
+import entity.combatant.StatField;
+import entity.combatant.Stats;
+
 public interface Healable {
     int getHp();
-    int getMaxHp();
+    Stats stats();
     void setHp(int hp);
     String getName();
 
@@ -11,7 +14,7 @@ public interface Healable {
      * Default implementation delegates to the concrete heal logic.
      */
     default void heal(int amount) {
-        int new_hp = Math.min(getMaxHp(), getHp() + amount);
+        int new_hp = Math.min(stats().get(StatField.maxHp), getHp() + amount);
         setHp(new_hp);
     }
 }

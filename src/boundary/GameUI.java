@@ -7,6 +7,7 @@ import java.util.Scanner;
 import entity.action.interfaces.Action;
 import entity.combatant.Combatant;
 import entity.combatant.Player;
+import entity.combatant.StatField;
 import entity.item.Item;
 import entity.level.Difficulty;
 
@@ -69,7 +70,7 @@ public class GameUI {
         for (Combatant c : combatants) {
             if (c.isAlive()) {
                 System.out.printf("  %-14s HP: %3d/%-3d  %s%n",
-                        c.getName(), c.getHp(), c.getMaxHp(), c.getStatus().toString());
+                        c.getName(), c.getHp(), c.stats().get(StatField.maxHp), c.getStatus().toString());
             }
         }
         System.out.println("=====================================================");
@@ -100,11 +101,11 @@ public class GameUI {
     public void displayBattleEnd(boolean playerWon, Player player, int rounds) {
         System.out.println("\n=====================================================");
         if (playerWon) {
-            System.out.println("  ★ VICTORY! Congratulations, you defeated all enemies!");
+            System.out.println("VICTORY! Congratulations, you defeated all enemies!");
             System.out.printf("  Remaining HP: %d/%d  |  Total Rounds: %d%n",
-                    player.getHp(), player.getMaxHp(), rounds);
+                    player.getHp(), player.stats().get(StatField.maxHp), rounds);
         } else {
-            System.out.println("  ✗ DEFEATED. Don't give up, try again!");
+            System.out.println("DEFEATED. Don't give up, try again!");
             System.out.printf("  Total Rounds Survived: %d%n", rounds);
         }
         System.out.println("=====================================================");

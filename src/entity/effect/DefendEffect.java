@@ -1,12 +1,9 @@
 package entity.effect;
 
-import boundary.GameUI;
+import entity.combatant.StatField;
 
-public class DefendEffect extends StatusEffect {
-    public DefendEffect() { name = "Defend"; duration = 2; value = 10; stackable = true; }
-
-    @Override
-    public void onExpire(String c, GameUI ui) {
-        ui.displayActionResult(c + "'s Defend effect expires.");
+public class DefendEffect extends DurationStatEffect {
+    public DefendEffect() { 
+        super("Defend", 2, true, 10, StatField.defense); 
     }
 }

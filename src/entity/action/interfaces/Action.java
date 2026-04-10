@@ -18,8 +18,8 @@ public interface Action {
 
     default boolean execute(ActionContext ctx) {
         if (!isReady(ctx)) return false;
-        List<Combatant> targets = selectTargets(ctx);
-        for (Combatant t : targets) { executeOn(t, ctx); }
+        ctx.targets = selectTargets(ctx);
+        for (Combatant t : ctx.targets) { executeOn(t, ctx); }
         return true;
     }
 }
