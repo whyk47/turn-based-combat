@@ -1,5 +1,8 @@
 package control;
 
+import boundary.GameUI;
+import entity.level.Level;
+
 public interface GameMode {
     String getName();
     Level getNextLevel(int roundNumber);        // controls enemy scaling
