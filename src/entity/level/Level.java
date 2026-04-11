@@ -23,7 +23,7 @@ public class Level {
         List<Enemy> list = new ArrayList<>();
         switch (difficulty) {
             case EASY:
-                list.add(new Goblin()); list.add(new Goblin()); list.add(new Dragon());
+                list.add(new Goblin()); list.add(new Goblin()); list.add(new Goblin());
                 break;
             case MEDIUM:
                 list.add(new Goblin()); list.add(new Wolf());
@@ -42,7 +42,7 @@ public class Level {
                 list.add(new Wolf()); list.add(new Wolf());
                 break;
             case HARD:
-                list.add(new Goblin()); list.add(new Wolf()); list.add(new Wolf());
+                list.add(new Goblin()); list.add(new Wolf()); list.add(new Dragon());
                 break;
             default: break;
         }

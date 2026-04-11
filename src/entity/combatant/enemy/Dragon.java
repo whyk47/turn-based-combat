@@ -4,6 +4,7 @@ import entity.action.ActionContext;
 import entity.action.enemy.EnemyBasicAttack;
 import entity.action.enemy.FireBreath;
 import entity.action.interfaces.Action;
+import java.util.List;
 
 public class Dragon extends Enemy {
 
@@ -11,7 +12,6 @@ public class Dragon extends Enemy {
 
     public Dragon() {
         super("Dragon", 120, 50, 20, 15);
-
         actions.add(new EnemyBasicAttack());
         actions.add(fireBreath);
     }
@@ -23,9 +23,19 @@ public class Dragon extends Enemy {
             return null;
         }
 
-        if (actions.ready(ctx).contains(fireBreath)) {
-            return fireBreath;
+        List<Action> ready = actions.ready(ctx);
+        if (ready.isEmpty()) {
+            return null;
         }
-        return actions.ready(ctx).get(0);
+
+        Action action;
+        if (ready.contains(fireBreath)) {
+            action = fireBreath;
+        } else {
+            action = ready.get(0);
+        }
+
+        selectTargets(ctx, action);
+        return action;
     }
 }

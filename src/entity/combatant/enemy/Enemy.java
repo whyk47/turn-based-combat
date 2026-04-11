@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Random;
 
 public class Enemy extends Combatant implements Stunnable {
+    private static final Random RANDOM = new Random();
 
     public Enemy(String name, int hp, int attack, int defense, int speed) {
         super(name, hp, attack, defense, speed);
@@ -17,13 +18,12 @@ public class Enemy extends Combatant implements Stunnable {
 
     @Override
     public void selectTargets(ActionContext ctx, Action action) {
-        for (Combatant c : ctx.allCombatants) {
-            if (!(c instanceof Enemy) && c.isAlive()) {
-                ctx.targets = List.of(c);
-                return;
-            }
-        }
+    if (ctx.getLivingOpponents().isEmpty()) {
+        ctx.targets = List.of();
+        return;
     }
+    ctx.targets = List.of((Combatant) ctx.getLivingOpponents().get(0));
+}
 
     @Override
     public Action chooseAction(ActionContext ctx) {
@@ -32,15 +32,11 @@ public class Enemy extends Combatant implements Stunnable {
             return null;
         }
 
-        List<Action> ready = actions.ready(ctx);
-        if (ready.isEmpty()) {
+        List<Action> readyActions = actions.ready(ctx);
+        if (readyActions.isEmpty()) {
             return null;
         }
 
-        int index = new Random().nextInt(ready.size());
-        Action action = ready.get(index);
-
-        selectTargets(ctx, action);
-        return action;
+        return readyActions.get(RANDOM.nextInt(readyActions.size()));
     }
 }
