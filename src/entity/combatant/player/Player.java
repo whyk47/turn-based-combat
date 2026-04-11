@@ -1,9 +1,5 @@
 package entity.combatant.player;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
-
 import entity.action.ActionContext;
 import entity.action.interfaces.Action;
 import entity.action.player.DefendAction;
@@ -12,6 +8,9 @@ import entity.combatant.Combatant;
 import entity.combatant.interfaces.Healable;
 import entity.combatant.interfaces.SmokeBombable;
 import entity.item.Item;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public abstract class Player extends Combatant implements Healable, SmokeBombable {
     protected List<Item> inventory;
@@ -28,6 +27,10 @@ public abstract class Player extends Combatant implements Healable, SmokeBombabl
         return inventory.stream().filter(i -> !i.isUsed()).collect(Collectors.toList());
     }
 
+    @Override
+    public void selectTargets(ActionContext ctx, Action action) {
+
+    }
     public boolean hasUsableItem() { return !getUsableItems().isEmpty(); }
 
     public Action chooseAction(ActionContext ctx) { 
