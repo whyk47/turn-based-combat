@@ -4,6 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
+import control.mode.ChallengeMode;
+import control.mode.GameMode;
+import control.mode.StoryMode;
+import control.mode.SurvivalMode;
+import control.mode.TimedMode;
 import entity.action.interfaces.Action;
 import entity.combatant.Combatant;
 import entity.combatant.helpers.StatField;
@@ -19,6 +24,32 @@ public class GameUI {
         System.out.println("===========================================");
         System.out.println("   WELCOME TO TURN-BASED COMBAT ARENA");
         System.out.println("===========================================");
+    }
+
+    public GameMode selectGameMode() {
+        System.out.println("\n--- SELECT GAME MODE ---");
+        System.out.println("1. Story Mode      -- 3-level progression (Easy → Medium → Hard)");
+        System.out.println("2. Survival Mode   -- Endless waves, increasing difficulty");
+        System.out.println("3. Timed Mode      -- 10-round limit, score by enemies killed");
+        System.out.println("4. Challenge Mode  -- Fixed loadout (Warrior + 2 Potions), Hard difficulty");
+        int pick = readChoice(1, 4);
+        switch (pick) {
+            case 1:  return new StoryMode();
+            case 2:  return new SurvivalMode();
+            case 3:  return new TimedMode();
+            default: return new ChallengeMode();
+        }
+    }
+
+    public void displayModeEnd(boolean playerWon, GameMode mode) {
+        System.out.println("\n=====================================================");
+        System.out.println("[ " + mode.getName().toUpperCase() + " ]");
+        if (playerWon) {
+            System.out.println("VICTORY! Well done!");
+        } else {
+            System.out.println("DEFEATED. Better luck next time!");
+        }
+        System.out.println("=====================================================");
     }
 
     public int selectPlayerType() {
@@ -130,32 +161,21 @@ public class GameUI {
         }
     }
 
-    /**
-     * Displays all actions the combatant possesses.
-     * Greys out unready actions and only accepts valid input from ready ones.
-     *
-     * @param allActions   full action list to display
-     * @param readyActions subset that can currently be chosen
-     * @param owner        the acting combatant
-     */
     public Action selectAction(List<Action> allActions,
-                                List<Action> readyActions,
-                                Combatant owner) {
+                               List<Action> readyActions,
+                               Combatant owner) {
         System.out.println("\n" + owner.getName() + "'s turn -- choose an action:");
 
         for (int i = 0; i < allActions.size(); i++) {
             Action action = allActions.get(i);
             boolean ready = readyActions.contains(action);
-
             if (ready) {
                 System.out.printf("  %d. %s%n", i + 1, action.getLabel());
             } else {
-                // Display but visually indicate unavailable
                 System.out.printf("  %d. %s  [UNAVAILABLE]%n", i + 1, action.getLabel());
             }
         }
 
-        // Only accept numbers that correspond to a ready action
         while (true) {
             System.out.print("> ");
             try {
@@ -169,5 +189,5 @@ public class GameUI {
             } catch (NumberFormatException ignored) {}
             System.out.println("Invalid choice. Please select a ready action.");
         }
-}
+    }
 }
