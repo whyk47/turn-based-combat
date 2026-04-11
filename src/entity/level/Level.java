@@ -1,11 +1,11 @@
 package entity.level;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import entity.combatant.enemy.Dragon;
 import entity.combatant.enemy.Enemy;
 import entity.combatant.enemy.Goblin;
 import entity.combatant.enemy.Wolf;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Level {
     private final Difficulty difficulty;
@@ -42,7 +42,7 @@ public class Level {
                 list.add(new Wolf()); list.add(new Wolf());
                 break;
             case HARD:
-                list.add(new Goblin()); list.add(new Wolf()); list.add(new Wolf());
+                list.add(new Goblin()); list.add(new Wolf()); list.add(new Dragon());
                 break;
             default: break;
         }

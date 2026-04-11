@@ -1,13 +1,10 @@
 package entity.combatant;
 
-import boundary.GameUI;
 import entity.action.ActionContext;
 import entity.action.interfaces.Action;
 import entity.combatant.helpers.ActionMenu;
-import entity.combatant.helpers.StatField;
 import entity.combatant.helpers.Stats;
 import entity.combatant.helpers.StatusManager;
-import entity.effect.base.StatusEffect;
 
 public abstract class Combatant {
     protected final String name;
@@ -26,25 +23,12 @@ public abstract class Combatant {
         this.actions = new ActionMenu();
     }
 
+    public abstract void selectTargets(ActionContext ctx, Action action);
 
     public abstract Action chooseAction(ActionContext ctx);
 
-    public void takeTurn(ActionContext ctx) {
-        if (status.trigger(CombatEvent.TURN_START, ctx.ui)) {
-            Action chosen = chooseAction(ctx);
-            actions.decrementCooldowns();
-            chosen.execute(ctx);
-        } else {
-            actions.decrementCooldowns();
-        }
-        status.trigger(CombatEvent.TURN_END, ctx.ui);
-        status.removeExpired();
-    }
-
-    public boolean takeDamage(int dmg, GameUI ui) {
-        if (!status.trigger(CombatEvent.ATTACKED, ui)) return false;
+    public void takeDamage(int dmg) {
         hp = Math.max(0, hp - dmg);
-        return true;
     }
     
     public Stats stats() { return baseStats.add(statEffects); }
@@ -54,10 +38,8 @@ public abstract class Combatant {
     public String getName() { return name; }
     public int getHp() { return hp; }
     public boolean isAlive() { return hp > 0; }
+    public StatusManager getStatus() { return status; }
     public ActionMenu getActions() { return actions; }
     public Stats getBaseStats() { return baseStats; }
     public Stats getStatEffects() { return statEffects; }
-    public int getStat(StatField stat) { return stats().get(stat); }
-    public void applyStatus(StatusEffect effect, GameUI ui) { status.add(effect, ui); }
-    public String showStatus() { return status.toString(); }
 }
