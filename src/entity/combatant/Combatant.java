@@ -23,6 +23,7 @@ public abstract class Combatant {
         this.actions = new ActionMenu();
     }
 
+    public abstract void selectTargets(ActionContext ctx, Action action);
 
     public abstract Action chooseAction(ActionContext ctx);
 
