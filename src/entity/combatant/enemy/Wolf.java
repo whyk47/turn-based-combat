@@ -1,12 +1,12 @@
 package entity.combatant.enemy;
 
-import entity.combatant.enemy.strategy.DefaultEnemyStrategy;
+import entity.combatant.enemy.strategy.RandomStrategy;
 
 public class Wolf extends Enemy {
     private static int count = 0;
 
     public Wolf() {
         super("Wolf-" + (char)('A' + count++), 40, 45, 5, 35);
-        setStrategy(new DefaultEnemyStrategy());
+        setStrategy(new RandomStrategy());
     }
 }

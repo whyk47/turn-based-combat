@@ -2,8 +2,11 @@ src/entity/combatant/Combatant.java
 src/entity/combatant/enemy/Goblin.java
 src/entity/combatant/enemy/Enemy.java
 src/entity/combatant/enemy/Wolf.java
+src/entity/combatant/enemy/strategy/RandomStrategy.java
 src/entity/combatant/enemy/strategy/EnemyBehaviourStrategy.java
+src/entity/combatant/enemy/strategy/AggressiveStrategy.java
 src/entity/combatant/enemy/strategy/DefaultEnemyStrategy.java
+src/entity/combatant/enemy/strategy/DefensiveStrategy.java
 src/entity/combatant/helpers/ActionMenu.java
 src/entity/combatant/helpers/Stats.java
 src/entity/combatant/helpers/StatusManager.java
