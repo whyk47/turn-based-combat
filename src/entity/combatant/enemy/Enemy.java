@@ -4,10 +4,14 @@ import entity.action.ActionContext;
 import entity.action.enemy.EnemyBasicAttack;
 import entity.action.interfaces.Action;
 import entity.combatant.Combatant;
+import entity.combatant.enemy.strategy.EnemyBehaviourStrategy;
 import entity.combatant.interfaces.Stunnable;
 
 public class Enemy extends Combatant implements Stunnable {
-
+    private EnemyBehaviourStrategy strategy; 
+    public void setStrategy(EnemyBehaviourStrategy strategy) {
+    this.strategy = strategy;
+}
     public Enemy(String name, int hp, int attack, int defense, int speed) {
         super(name, hp, attack, defense, speed);
         actions.add(new EnemyBasicAttack());
@@ -18,6 +22,9 @@ public class Enemy extends Combatant implements Stunnable {
             showStun(ctx.ui);
             return null;
         }
+        if (strategy == null) {
         return actions.ready(ctx).get(0);
+        }
+        return strategy.chooseAction(ctx);
     }
 }
