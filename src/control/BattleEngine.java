@@ -12,33 +12,41 @@ import entity.combatant.enemy.Enemy;
 import entity.combatant.player.Player;
 import entity.level.Level;
 
+import control.mode.GameMode;
+
 public class BattleEngine {
 
     private final UserInterface ui;
     private final TurnOrderStrategy turnStrategy;
     private final Level level;
     private final Player player;
+    private final GameMode mode;
     private final List<Combatant> allCombatants = new ArrayList<>();
     private int currentRound = 0;
     private int levelNumber = 1;
     private int enemiesKilled = 0;
 
-    public BattleEngine(UserInterface ui, TurnOrderStrategy turnStrategy, Level level, Player player) {
-        this(ui, turnStrategy, level, player, 1);
+    public BattleEngine(UserInterface ui, TurnOrderStrategy turnStrategy, Level level, Player player, GameMode mode) {
+        this(ui, turnStrategy, level, player, 1, mode);
     }
 
-    public BattleEngine(UserInterface ui, TurnOrderStrategy turnStrategy, Level level, Player player, int levelNumber) {
+    public BattleEngine(UserInterface ui, TurnOrderStrategy turnStrategy, Level level, Player player, int levelNumber, GameMode mode) {
         this.ui = ui;
         this.turnStrategy = turnStrategy;
         this.level = level;
         this.player = player;
         this.levelNumber = levelNumber;
+        this.mode = mode;
         allCombatants.add(player);
         allCombatants.addAll(level.getInitialEnemies());
     }
 
     public boolean startBattle() {
         while (true) {
+            if (isBattleOver() || mode.isBattleOver(this)) {
+                return player.isAlive();
+            }
+
             currentRound++;
 
             if (getLivingEnemies().isEmpty() && level.isNextWaveAvailable()) {
@@ -56,7 +64,7 @@ public class BattleEngine {
             for (Combatant combatant : turnOrder) {
                 if (!combatant.isAlive()) continue;
                 takeTurn(combatant);
-                if (isBattleOver()) {
+                if (isBattleOver() || mode.isBattleOver(this)) {
                     return player.isAlive();
                 }
             }

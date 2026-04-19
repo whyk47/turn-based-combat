@@ -6,7 +6,7 @@ import control.mode.GameMode;
 
 public class TimedMode extends GameMode {
 
-    private static final int ROUND_LIMIT = 10;
+    private static final int ROUND_LIMIT = 5;
     private int enemiesKilled = 0;
 
     public TimedMode() {
@@ -17,11 +17,16 @@ public class TimedMode extends GameMode {
     public String getName() { return "Timed Mode"; }
 
     @Override
-    public String getDescription() { return "10-round limit, score by enemies killed"; }
+    public String getDescription() { return "5-round limit, score by enemies killed"; }
 
     @Override
     public boolean isBattleOver(BattleEngine engine) {
-        return !engine.getPlayer().isAlive() || engine.getRound() >= ROUND_LIMIT;
+        return super.isBattleOver(engine) || engine.getRound() >= ROUND_LIMIT;
+    }
+
+    @Override
+    public boolean hasPlayerWon(BattleEngine engine) {
+        return engine.getPlayer().isAlive() && engine.isBattleOver();
     }
 
     @Override

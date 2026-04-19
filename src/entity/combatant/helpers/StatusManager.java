@@ -108,6 +108,7 @@ public class StatusManager {
         for (StatusEffect e : active()) {
             proceed = proceed && e.trigger(event, ctx);
         }
+        removeExpired();
         return proceed;
     }
 

@@ -71,13 +71,13 @@ public class GameManager {
                 .addEquipment(artifactClass)
                 .build();
             
-            BattleEngine engine = new BattleEngine(ui, mode.turnStrategy, level, player, levelNumber);
+            BattleEngine engine = new BattleEngine(ui, mode.turnStrategy, level, player, levelNumber, mode);
 
             engine.startBattle();
             mode.onRoundEnd(engine, ui);
 
             if (mode.isBattleOver(engine)) {
-                return player.isAlive();
+                return mode.hasPlayerWon(engine);
             }
             levelNumber++;
         }

@@ -3,10 +3,10 @@ package control.mode.timed;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-import entity.level.Difficulty;
-import entity.level.Level;
-import entity.level.DifficultySpawner;
 import control.mode.LevelGenerator;
+import entity.level.Difficulty;
+import entity.level.DifficultySpawner;
+import entity.level.Level;
 
 public class TimedLevelGenerator implements LevelGenerator {
     @Override
@@ -23,7 +23,7 @@ public class TimedLevelGenerator implements LevelGenerator {
             public Level next() {
                 if (!hasNext()) throw new NoSuchElementException();
                 delivered = true;
-                return new Level(new DifficultySpawner(Difficulty.MEDIUM));
+                return new Level(new DifficultySpawner(Difficulty.HARD));
             }
         };
     }

@@ -55,5 +55,9 @@ public abstract class GameMode implements Iterable<Level>, Named, Describable {
         return engine.isBattleOver();
     }
 
+    public boolean hasPlayerWon(BattleEngine engine) {
+        return engine.getPlayer().isAlive() && engine.isBattleOver();
+    }
+
     public abstract void onRoundEnd(BattleEngine engine, UserInterface ui);
 }
