@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import boundary.UserInterface;
+import control.mode.GameMode;
 import control.strategy.TurnOrderStrategy;
 import entity.action.ActionContext;
 import entity.combatant.Combatant;
@@ -12,12 +13,9 @@ import entity.combatant.enemy.Enemy;
 import entity.combatant.player.Player;
 import entity.level.Level;
 
-import control.mode.GameMode;
-
 public class BattleEngine {
 
     private final UserInterface ui;
-    private final TurnOrderStrategy turnStrategy;
     private final Level level;
     private final Player player;
     private final GameMode mode;
@@ -32,7 +30,6 @@ public class BattleEngine {
 
     public BattleEngine(UserInterface ui, TurnOrderStrategy turnStrategy, Level level, Player player, int levelNumber, GameMode mode) {
         this.ui = ui;
-        this.turnStrategy = turnStrategy;
         this.level = level;
         this.player = player;
         this.levelNumber = levelNumber;
@@ -58,7 +55,7 @@ public class BattleEngine {
 
             ui.displayRoundStart(currentRound, allCombatants);
 
-            List<Combatant> turnOrder = turnStrategy.determineTurnOrder(
+            List<Combatant> turnOrder = mode.turnStrategy.determineTurnOrder(
                     allCombatants.stream().filter(Combatant::isAlive).collect(Collectors.toList()));
 
             for (Combatant combatant : turnOrder) {
